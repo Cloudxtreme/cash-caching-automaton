@@ -1,14 +1,23 @@
 //-----------------------------------------------------------------
 #include <string.h>
 
+#define RELAY_DISP_PIN  A0
+#define RELAY_LIGHT_PIN A1
+
 #define MAX_COMMAND_LENGTH  64
 
 String inputString = "";        // String read in from serial
+String lastString = "";         // Last complete string read in
 boolean stringComplete = false; // Is the string finished?
 
 void setup() {
   // Start up the serial at 9600 baud:
+  pinMode(A0, OUTPUT);
+  pinMode(A1, OUTPUT);
+  digitalWrite(A0, HIGH);
+  digitalWrite(A1, HIGH);
   Serial.begin(9600);
+  //Serial.print(">: ");
 }
 
 void loop() {
@@ -34,16 +43,23 @@ void serialEvent() {
     char inChar = (char)Serial.read(); 
 
     // If a newline is found:
-    if (inChar == '\n') {
+    if (inChar == '\n' || inChar == '\r' || inChar == '\0') {
       // Convert the string to lowercase:
       inputString.toLowerCase();
       // The string is fully-formed, set the stringComplete flag:
       stringComplete = true;
+      // Set the lastString to the new complete string:
+      lastString = inputString;
+      // Clear the inputString:
+      inputString = "";
+      // Start the next terminal line:
+      //Serial.print("\n>: ");
     } 
     // Otherwise, keep going:
     else if (!stringComplete){
       // Add the character to the inputString:
       inputString += inChar;
+      //Serial.print(inChar);
     }
   }
 }
@@ -56,12 +72,11 @@ void serialEvent() {
 void parseCommand() {
   // Grab the first keyword from the string:
   String keyword = getNextKeyword();
-  
   // Find the case where the keyword matches the function:
   if (keyword.equals("dispense")) {
     keyword = getNextKeyword();
-    if (keyword.equals("")) {
-      dispense(0);
+    if (keyword.equals("") || keyword.equals("dispense")) {
+      dispense(1);
     }
     else if (keywordIsInt(keyword)) {
       dispense(keywordToInt(keyword));
@@ -77,13 +92,16 @@ void parseCommand() {
       if (keywordIsInt(keyword)) {
         checkTube(keywordToInt(keyword));
       }
-      else if (keyword.equals("")){
+      else if (keyword.equals("") || keyword.equals("check")){
         Serial.println("Error: tube number not entered.");
       } 
       else {
         invalidKeyword(keyword);
       }
     } 
+  }
+  else if (keyword.equals("refill")) {
+    refill();
   }
   else if (keyword.equals("test")) {
   }
@@ -104,18 +122,18 @@ String getNextKeyword() {
   int keywordLength; // Length of the keyword
   
   // Length of the keywoard is the same as the index of the space:
-  keywordLength = inputString.indexOf(' ');
+  keywordLength = lastString.indexOf(' ');
   // If the string contains no spaces (just one keyword):
   if (keywordLength == -1) {
     // The keyword is the whole string:
-    keyword = inputString;
+    keyword = lastString;
   }
   // Otherwise the string contains one or more keywords:
   else {
     // Collect the first keyword:  
-    keyword = inputString.substring(0, keywordLength - 1);
+    keyword = lastString.substring(0, keywordLength);
     // Remove the keyword (and space) from the string:
-    inputString = inputString.substring(keywordLength + 1);
+    lastString = lastString.substring(keywordLength + 1);
   } 
   return keyword;
 }

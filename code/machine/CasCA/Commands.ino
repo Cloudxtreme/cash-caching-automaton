@@ -6,8 +6,26 @@
            is given (two quarters for Version 1).
 */
 void dispense(int amount) {
-  //TODO: Trigger the dispense pin for a short period of time
-  //TODO: Repeat for number of quarters desired
+  // Check to see if enough coins are in the machine:
+  if (getCoinsLeft() >= amount)
+  {
+    // Dispense "amount" number of times:
+    for (int i=0; i<amount; i++)
+    {
+      // Trigger the relay to dispense once:
+      digitalWrite(RELAY_DISP_PIN, LOW);
+      delay(250);
+      // Release the relay:
+      digitalWrite(RELAY_DISP_PIN, HIGH);
+      delay(250);
+      // Decrease number of coins remaining:
+      coinsDispensed();
+    }
+  }
+  else
+  {
+    Serial.println("Insufficient coins in machine.");
+  }
 }
 
 /*
@@ -16,8 +34,18 @@ void dispense(int amount) {
            tube <number>. If there are more quarters than the
            sensor can count, '999' will be returned.
 */
-int checkTube(int number) {
+void checkTube(int number) {
+  Serial.print(getCoinsLeft());
+  Serial.println(" coins remaining.");
   //TODO: Check for valid tube number
   //TODO: Return the number of quarters in the tube
+}
+
+/*
+  Command: "refill"
+  Action:  Sets the number of coins in machine to FULL_AMOUNT. 
+*/
+void refill() {
+  refillCoins();
 }
   
