@@ -1,5 +1,6 @@
 //-----------------------------------------------------------------
 #include <string.h>
+#include <TimerOne.h>
 
 #define RELAY_DISP_PIN  A0
 #define RELAY_LIGHT_PIN A1

@@ -25,6 +25,10 @@ void dispense(int amount) {
   else
   {
     Serial.println("Insufficient coins in machine.");
+    // Blink the light three times:
+    blinkLightNumberOfTimes(3);
+    // Turn on the light to indicate low funds:
+    turnOnLight();
   }
 }
 
@@ -47,5 +51,7 @@ void checkTube(int number) {
 */
 void refill() {
   refillCoins();
+  // Turn off the light since the machine is full again:
+  turnOffLight();
 }
   
