@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------
+//------------------------------------------------------------------
 #include <string.h>
 #include <TimerOne.h>
 
@@ -6,6 +6,8 @@
 #define RELAY_LIGHT_PIN A1
 
 #define MAX_COMMAND_LENGTH  64
+
+#define DEBUG // Debug-mode toggle. Comment out to disable debug.
 
 String inputString = "";        // String read in from serial
 String lastString = "";         // Last complete string read in
@@ -18,7 +20,7 @@ void setup() {
   digitalWrite(A0, HIGH);
   digitalWrite(A1, HIGH);
   Serial.begin(9600);
-  //Serial.print(">: ");
+  printDebug(">: ");
 }
 
 void loop() {
@@ -54,13 +56,13 @@ void serialEvent() {
       // Clear the inputString:
       inputString = "";
       // Start the next terminal line:
-      //Serial.print("\n>: ");
+      printDebug("\n>: ");
     } 
     // Otherwise, keep going:
     else if (!stringComplete){
       // Add the character to the inputString:
       inputString += inChar;
-      //Serial.print(inChar);
+      printDebug((String)inChar);
     }
   }
 }
@@ -94,7 +96,7 @@ void parseCommand() {
         checkTube(keywordToInt(keyword));
       }
       else if (keyword.equals("") || keyword.equals("check")){
-        Serial.println("Error: tube number not entered.");
+        printDebug("Error: tube number not entered.\n");
       } 
       else {
         invalidKeyword(keyword);
@@ -145,9 +147,9 @@ String getNextKeyword() {
    the suggestion of valid keywords that are similar.
 */
 void invalidKeyword(String keyword) {
-  Serial.print("Error: keyword '");
-  Serial.print(keyword);
-  Serial.println("' is invalid.");
+  printDebug("Error: keyword '");
+  printDebug(keyword);
+  printDebug("' is invalid.\n");
 }
 
 /*
@@ -184,4 +186,33 @@ int keywordToInt(String keyword) {
   keyword.toCharArray(cstring, sizeof(cstring));
   // Convert the char array to an int:
   return atoi(cstring);
+}
+
+/*
+  printDebug() will print a debug message to Serial if debug-mode is
+   enabled (#define DEBUG). Any information that is not used by
+   the host program should be printed with this command.
+*/
+void printDebug(String message) {
+  #ifdef DEBUG
+    // Thie will only be printed if debug-mode is enabled:
+    Serial.print(message);
+  #endif
+}
+
+/*
+  printReturn() will print a key-value-pair message for use in the 
+   host program. Messages will be in the form of: {{key=value}}
+*/
+void printReturn(String key, String value) {
+  // Add the first set of double-braces:
+  Serial.print("{{");
+  // Print the key:
+  Serial.print(key);
+  // Print the equals sign:
+  Serial.print("=");
+  // Print the value:
+  Serial.print(value);
+  // Finally, print the closing braces:
+  Serial.println("}}");
 }

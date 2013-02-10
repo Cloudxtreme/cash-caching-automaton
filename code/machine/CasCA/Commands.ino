@@ -24,7 +24,7 @@ void dispense(int amount) {
   }
   else
   {
-    Serial.println("Insufficient coins in machine.");
+    printDebug("Insufficient coins in machine.\n");
     // Blink the light three times:
     blinkLightNumberOfTimes(3);
     // Turn on the light to indicate low funds:
@@ -39,8 +39,11 @@ void dispense(int amount) {
            sensor can count, '999' will be returned.
 */
 void checkTube(int number) {
-  Serial.print(getCoinsLeft());
-  Serial.println(" coins remaining.");
+  int coinsRemaining = getCoinsLeft();
+  printDebug((String)coinsRemaining);
+  printDebug(" coins remaining.\n");
+  
+  printReturn("coins", (String)coinsRemaining);
   //TODO: Check for valid tube number
   //TODO: Return the number of quarters in the tube
 }
