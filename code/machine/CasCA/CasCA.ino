@@ -13,13 +13,18 @@ String inputString = "";        // String read in from serial
 String lastString = "";         // Last complete string read in
 boolean stringComplete = false; // Is the string finished?
 
-void setup() {
-  // Start up the serial at 9600 baud:
+void setup() 
+{
+  // Initialize the output pins:
   pinMode(A0, OUTPUT);
   pinMode(A1, OUTPUT);
   digitalWrite(A0, HIGH);
   digitalWrite(A1, HIGH);
+  // Initialize the coin tracker:
+  initCoinTracker();
+  // Start up the serial at 9600 baud:
   Serial.begin(9600);
+  // Show the prompt symbol:
   printDebug(">: ");
 }
 
@@ -39,14 +44,14 @@ void loop() {
   serialEvent() checks for serial data and adds any new chars
    to inputString. If the stringComplete flag is true, it means
    a newline was found and the string is complete.
- */
+*/
 void serialEvent() {
   while (Serial.available()) {
     // Read in the next byte (character) via serial:
     char inChar = (char)Serial.read(); 
 
     // If a newline is found:
-    if (inChar == '\n' || inChar == '\r' || inChar == '\0') {
+    if (inChar == '\n' || inChar == '\0') {
       // Convert the string to lowercase:
       inputString.toLowerCase();
       // The string is fully-formed, set the stringComplete flag:
@@ -56,7 +61,7 @@ void serialEvent() {
       // Clear the inputString:
       inputString = "";
       // Start the next terminal line:
-      printDebug("\n>: ");
+      printDebug("\r\n>: ");
     } 
     // Otherwise, keep going:
     else if (!stringComplete){

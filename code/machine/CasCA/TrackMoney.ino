@@ -3,32 +3,38 @@
 
 int coinsLeft = 0;
 
-void refillCoins()
-{
-  coinsLeft = FULL_AMOUNT;
+// Starts up the coin tracker by reading in the last stored coin
+//  count value.
+void initCoinTracker() {
+  // Retrieve the last stored coint count value:
+  coinsLeft = retrieveCoinCount();
 }
 
-boolean coinsDispensed()
-{
-  if (coinsLeft > 0)
-  {
+// This funciton should be called anytime the machine is
+//  refilled. It sets the coin count to the maximum count set by
+//  FULL_AMOUNT.
+void refillCoins() {
+  coinsLeft = FULL_AMOUNT;
+  storeCoinCount(coinsLeft);
+}
+
+// Used to keep track of dispensed coins. It will not try to
+//  dispense coins if the coin count is zero. Returns true if
+//  coin count was successfully decreased.
+boolean coinsDispensed() {
+  if (coinsLeft > 0) {
     --coinsLeft;
+    storeCoinCount(coinsLeft);
     return true;
   }
-  else
-  {
+  else {
     return false;
   }
 }
 
-int getCoinsLeft()
-{
+// Returns the number of coins left in the machine.
+int getCoinsLeft() {
   return coinsLeft;
-}
-
-bool checkCoinsSwitch()
-{
-  return false; 
 }
 
 

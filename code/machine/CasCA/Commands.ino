@@ -7,11 +7,9 @@
 */
 void dispense(int amount) {
   // Check to see if enough coins are in the machine:
-  if (getCoinsLeft() >= amount)
-  {
+  if (getCoinsLeft() >= amount) {
     // Dispense "amount" number of times:
-    for (int i=0; i<amount; i++)
-    {
+    for (int i=0; i<amount; i++) {
       // Trigger the relay to dispense once:
       digitalWrite(RELAY_DISP_PIN, LOW);
       delay(250);
@@ -22,9 +20,8 @@ void dispense(int amount) {
       coinsDispensed();
     }
   }
-  else
-  {
-    printDebug("Insufficient coins in machine.\n");
+  else {
+    printDebug("Insufficient coins in machine.\r\n");
     // Blink the light three times:
     blinkLightNumberOfTimes(3);
     // Turn on the light to indicate low funds:
@@ -41,7 +38,7 @@ void dispense(int amount) {
 void checkTube(int number) {
   int coinsRemaining = getCoinsLeft();
   printDebug((String)coinsRemaining);
-  printDebug(" coins remaining.\n");
+  printDebug(" coins remaining.\r\n");
   
   printReturn("coins", (String)coinsRemaining);
   //TODO: Check for valid tube number
