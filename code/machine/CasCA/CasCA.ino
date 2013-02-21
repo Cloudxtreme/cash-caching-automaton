@@ -8,6 +8,7 @@
 #define MAX_COMMAND_LENGTH  64
 
 #define DEBUG // Debug-mode toggle. Comment out to disable debug.
+#define RETURN_VALS // Return-mode define. Controls return messages.
 
 String inputString = "";        // String read in from serial
 String lastString = "";         // Last complete string read in
@@ -20,8 +21,6 @@ void setup()
   pinMode(A1, OUTPUT);
   digitalWrite(A0, HIGH);
   digitalWrite(A1, HIGH);
-  // Initialize the coin tracker:
-  initCoinTracker();
   // Start up the serial at 9600 baud:
   Serial.begin(9600);
   // Show the prompt symbol:
@@ -85,38 +84,64 @@ void parseCommand() {
     keyword = getNextKeyword();
     if (keyword.equals("") || keyword.equals("dispense")) {
       dispense(1);
+      printReturn(1); // Successful dispense
     }
     else if (keywordIsInt(keyword)) {
       dispense(keywordToInt(keyword));
+      printReturn(1); // Successful dispense
     }
     else {
       invalidKeyword(keyword);
+      printReturn(0); // Unsuccessful dispense
     }
   }
-  else if (keyword.equals("check")) {
+  else if (keyword.equals("light")) {
     keyword = getNextKeyword();
-    if (keyword.equals("tube")) {
+    if (keyword.equals("on")) {
+      turnOnLight();
+      printReturn(1); // Successful light on
+    }    
+    else if (keyword.equals("off")) {
+      turnOffLight();
+      printReturn(1); // Successful light off
+    }
+    else if (keyword.equals("blink")) {
       keyword = getNextKeyword();
-      if (keywordIsInt(keyword)) {
-        checkTube(keywordToInt(keyword));
+      if (keyword.equals("") || keyword.equals("blink")) {
+        blinkLightNumberOfTimes();
+        printReturn(1); // Successful blink
       }
-      else if (keyword.equals("") || keyword.equals("check")){
-        printDebug("Error: tube number not entered.\n");
-      } 
+      else if (keywordIsInt(keyword)) {
+        blinkLightNumberOfTimes(keywordToInt(keyword));
+        printReturn(1); // Successful blink
+      }
       else {
         invalidKeyword(keyword);
+        printReturn(0); // Unsuccessful blink
       }
-    } 
-  }
-  else if (keyword.equals("refill")) {
-    refill();
+    }
+    else if (keyword.equals("") || keyword.equals("light")) {
+      printDebug("Not enough arguments; try one of these:/r/n");
+      printDebug("  light on/r/n");
+      printDebug("  light off/r/n");
+      printDebug("  light blink/r/n");
+      printDebug("  light blink 2/r/n");
+      printReturn(0); // Unsuccessful light command
+    }
+    else {
+      invalidKeyword(keyword);
+      printReturn(0); // Unsuccessful light command
+    }
   }
   else if (keyword.equals("test")) {
+    printDebug("Test command successful.\r\n");
+    printReturn(1); // Successful test command
   }
   else if (keyword.equals("")) {
   }
   else {
     invalidKeyword(keyword);
+    printReturn(0); // Unsuccessful command
   } 
 }
 
@@ -206,18 +231,14 @@ void printDebug(String message) {
 }
 
 /*
-  printReturn() will print a key-value-pair message for use in the 
-   host program. Messages will be in the form of: {{key=value}}
+  printReturn() will print a value indicating the output of a
+   command. This is usually a Boolean output of '0' or '1' for most
+   commands that just need to indicate success. These messages may
+   be suppressed by commenting out the '#define RETURN_VALS' line
+   at the top of this file. 
 */
-void printReturn(String key, String value) {
-  // Add the first set of double-braces:
-  Serial.print("{{");
-  // Print the key:
-  Serial.print(key);
-  // Print the equals sign:
-  Serial.print("=");
-  // Print the value:
-  Serial.print(value);
-  // Finally, print the closing braces:
-  Serial.println("}}");
+void printReturn(int value) {
+  #ifdef RETURN_VALS
+    Serial.println(value);
+  #endif
 }
