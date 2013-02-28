@@ -12,12 +12,12 @@ def showuserstatus():
   sql = '''select a.id, a.username, a.email, sum(b.usd) from users a left join transactions b on b.users_id = a.id GROUP  BY a.username;'''
   args = ()
   ret = query(sql, args)
-  print "{:>12s}{:>12s}{:>12s}{:>25s}".format("Useer ID","User Name","Balance","Email")
-  print "{:>12s}{:>12s}{:>12s}{:>25s}".format("--------","---------","--------","--------")
+  print "{0:>12s}{1:>12s}{2:>12s}{3:>25s}".format("Useer ID","User Name","Balance","Email")
+  print "{0:>12s}{1:>12s}{2:>12s}{3:>25s}".format("--------","---------","--------","--------")
   for row in ret:
     if not row[3]: bal = 0.00
     else: bal = row[3]
-    print "{:>12d}{:>12s}{:>12.2f}{:>25s}".format(row[0], row[1], bal, row[2])
+    print "{0:>12d}{1:>12s}{2:>12.2f}{3:>25s}".format(row[0], row[1], bal, row[2])
 
 def updateuser():
   showuserstatus()
@@ -35,9 +35,9 @@ def updateuser():
   usb = raw_input("Do you want to update the USBid? [Y/n]: ")
   if usb == "y" or usb == "Y": usbsn = getusbsn()
   else: usbsn = user[3]
-  print "{:>12s}{:>12s}{:>25s}{:>20s}".format("Useer ID","User Name","Email","USB")
-  print "{:>12s}{:>12s}{:>25s}{:>20s}".format("--------","---------","--------","--------")
-  print "{:>12s}{:>12s}{:>25s}{:>20s}".format(userid, username, email, usbsn)
+  print "{0:>12s}{1:>12s}{2:>25s}{3:>20s}".format("Useer ID","User Name","Email","USB")
+  print "{0:>12s}{1:>12s}{2:>25s}{3:>20s}".format("--------","---------","--------","--------")
+  print "{0:>12s}{1:>12s}{2:>25s}{3:>20s}".format(userid, username, email, usbsn)
   answer = raw_input("Is this correct? [Y/n]: ")
   if not (answer == "y" or answer == "Y"):
     return
@@ -66,9 +66,9 @@ def adduser():
   usbsn = getusbsn() 
 
   # print to verify
-  print "{:>12s}{:>25s}{:>25s}".format("User Name","Email","USB")
-  print "{:>12s}{:>25s}{:>25s}".format("---------","--------","--------")
-  print "{:>12s}{:>25s}{:>25s}".format(username, email, usbsn)
+  print "{0:>12s}{1:>25s}{2:>25s}".format("User Name","Email","USB")
+  print "{0:>12s}{1:>25s}{2:>25s}".format("---------","--------","--------")
+  print "{0:>12s}{1:>25s}{2:>25s}".format(username, email, usbsn)
   answer = raw_input("Is this correct? [Y/n]: ")
   if not (answer == "y" or answer == "Y"):
     return
