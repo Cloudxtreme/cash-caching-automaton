@@ -4,7 +4,8 @@ import serial
 from cash_api import *
 
 #Set the filename and open the file
-filename = '/var/log/kern.log'
+#filename = '/var/log/kern.log'
+filename = '/var/log/dmesg'
 file = open(filename,'r')
 
 #Find the size of the file and move to the end
@@ -15,8 +16,8 @@ file.seek(st_size)
 # call to dispense change
 def dispense():
   user=getuser(userid=1)
-  if user[4] <= 0:
-    return
+  if user[4] < 0.50:
+    return False
   # connect to serial
   ser = serial.Serial("/dev/ttyACM0", 9600)
   time.sleep(2)
@@ -51,7 +52,7 @@ def lightblink(blink=3):
 
 def process(usbsn):
   user = getuser(usbsn=usbsn)
-  # Is user has enought money
+  # If user has enought money
   if user[4] >= 0.50:
     if dispense():
       addtrans(user=user, ammount='-0.50')
