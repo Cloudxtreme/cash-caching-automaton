@@ -4,8 +4,7 @@ import serial
 from cash_api import *
 
 #Set the filename and open the file
-#filename = '/var/log/kern.log'
-filename = '/var/log/dmesg'
+filename = '/var/log/kern.log'
 file = open(filename,'r')
 
 #Find the size of the file and move to the end
@@ -29,14 +28,14 @@ def dispense():
   return True
 
 def lighton():
-  print "light on"
+  #print "light on"
   ser = serial.Serial("/dev/ttyACM0", 9600)
   time.sleep(2)
   ser.write('light on\n')
   time.sleep(2)
   
 def lightoff():
-  print "light off"
+  #print "light off"
   ser = serial.Serial("/dev/ttyACM0", 9600)
   time.sleep(2)
   ser.write('light off\n')
@@ -44,7 +43,7 @@ def lightoff():
 
 # blink light, default is 3
 def lightblink(blink=3):
-  print "light blink"
+  #print "light blink"
   ser = serial.Serial("/dev/ttyACM0", 9600)
   time.sleep(2)
   ser.write('light blink '+str(blink)+'\n')
@@ -60,7 +59,7 @@ def process(usbsn):
     else:
       lighton()
   else:
-    print "no dispense"
+    #print "no dispense"
     lightblink()
     return False
 
