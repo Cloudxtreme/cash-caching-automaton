@@ -51,6 +51,7 @@ def getusbsn():
   usb = raw_input("Did you plug in the usb stick? [Y/n]: ")
   if not (usb == "y" or usb == "Y"): 
     getusbsn()
+  open('/storage/lock', 'w').close() 
   p1 = subprocess.Popen('dmesg', shell=False, stdout=subprocess.PIPE)
   p2 = subprocess.Popen('tac', shell=False, stdin=p1.stdout, stdout=subprocess.PIPE)
   usbsn = ''
@@ -58,6 +59,7 @@ def getusbsn():
     m = re.search(r"SerialNumber: (\w+)", line)
     if m and not usbsn:
       usbsn = m.group(1)
+  os.remove('/storage/lock')
   return usbsn
 
 def adduser():
