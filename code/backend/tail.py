@@ -65,10 +65,10 @@ def process(usbsn):
 
 while 1:
   try:
-    if os.path.isfile("/storage/lock"):
-      continue
     where = file.tell()
     line = file.readline()
+    if os.path.isfile("/storage/lock"):
+      continue
     if not line:
         time.sleep(1)
         file.seek(where)

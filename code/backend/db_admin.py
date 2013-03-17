@@ -48,10 +48,10 @@ def updateuser():
   
 
 def getusbsn():
+  open('/storage/lock', 'w').close() 
   usb = raw_input("Did you plug in the usb stick? [Y/n]: ")
   if not (usb == "y" or usb == "Y"): 
     getusbsn()
-  open('/storage/lock', 'w').close() 
   p1 = subprocess.Popen('dmesg', shell=False, stdout=subprocess.PIPE)
   p2 = subprocess.Popen('tac', shell=False, stdin=p1.stdout, stdout=subprocess.PIPE)
   usbsn = ''
