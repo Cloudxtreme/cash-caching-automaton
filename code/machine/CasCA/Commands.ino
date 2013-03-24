@@ -53,3 +53,26 @@ void turnOnLight() {
 void turnOffLight() {
   digitalWrite(RELAY_LIGHT_PIN, HIGH);
 }
+
+/*
+  Command: "debug on"
+  Action: Enables the output of debug messages over the serial port.
+*/
+void enableDebug() {
+  if (debugMode == true) {
+    printDebug("Debug mode is already enabled.\r\n");
+  }
+  else {
+    debugMode = true;
+    printDebug("Debug output is now enabled.\r\n");
+  }
+}
+
+/*
+  Command: "debug off"
+  Action: Disables the output of debug messages over the serial port.
+*/
+void disableDebug() {
+  printDebug("Debug mode is now disabled.");
+  debugMode = false;
+}

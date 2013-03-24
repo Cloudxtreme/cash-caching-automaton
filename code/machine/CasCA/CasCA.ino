@@ -7,20 +7,22 @@
 
 #define MAX_COMMAND_LENGTH  64
 
-#define DEBUG // Debug-mode toggle. Comment out to disable debug.
 #define RETURN_VALS // Return-mode define. Controls return messages.
 
 String inputString = "";        // String read in from serial
 String lastString = "";         // Last complete string read in
 boolean stringComplete = false; // Is the string finished?
+boolean debugMode = false;      // Disable debug mode by default
 
 void setup() 
 {
   // Initialize the output pins:
-  pinMode(A0, OUTPUT);
-  pinMode(A1, OUTPUT);
-  digitalWrite(A0, HIGH);
-  digitalWrite(A1, HIGH);
+  pinMode(RELAY_DISP_PIN, OUTPUT);
+  pinMode(RELAY_LIGHT_PIN, OUTPUT);
+  digitalWrite(RELAY_DISP_PIN, HIGH);
+  digitalWrite(RELAY_LIGHT_PIN, HIGH);
+  // Start up the temperature control:
+  initTempControl();
   // Start up the serial at 9600 baud:
   Serial.begin(9600);
   // Show the prompt symbol:
@@ -37,6 +39,8 @@ void loop() {
     // Reset the stringComplete flag:
     stringComplete = false;
   }
+  // Run the temperature control routine:
+  runTempControl();
 }
 
 /*
@@ -133,11 +137,29 @@ void parseCommand() {
       printReturn(0); // Unsuccessful light command
     }
   }
+  else if (keyword.equals("debug")) {
+    keyword = getNextKeyword();
+    if (keyword.equals("on")) {
+      enableDebug();
+      printReturn(1); // Successful debug on
+    }    
+    else if (keyword.equals("off")) {
+      disableDebug();
+      printReturn(1); // Successful debug off
+    }
+    else if (keyword.equals("") || keyword.equals("debug")) {
+      printDebug("Not enough arguments; try one of these:/r/n");
+      printDebug("  debug on/r/n");
+      printDebug("  debug off/r/n");
+      printReturn(0); // Unsuccessful debug command
+    }
+  }
   else if (keyword.equals("test")) {
     printDebug("Test command successful.\r\n");
     printReturn(1); // Successful test command
   }
   else if (keyword.equals("")) {
+    // Do nothing
   }
   else {
     invalidKeyword(keyword);
@@ -179,7 +201,7 @@ String getNextKeyword() {
 void invalidKeyword(String keyword) {
   printDebug("Error: keyword '");
   printDebug(keyword);
-  printDebug("' is invalid.\n");
+  printDebug("' is invalid.\r\n");
 }
 
 /*
@@ -224,11 +246,25 @@ int keywordToInt(String keyword) {
    the host program should be printed with this command.
 */
 void printDebug(String message) {
-  #ifdef DEBUG
+  if (debugMode)
+  {
     // Thie will only be printed if debug-mode is enabled:
     Serial.print(message);
-  #endif
+  }
 }
+void printDebug(int message) {
+  if (debugMode)
+  {
+    Serial.print(message);
+  }
+}
+void printDebug(float message) {
+  if (debugMode)
+  {
+    Serial.print(message);
+  }
+}
+
 
 /*
   printReturn() will print a value indicating the output of a
@@ -238,6 +274,11 @@ void printDebug(String message) {
    at the top of this file. 
 */
 void printReturn(int value) {
+  #ifdef RETURN_VALS
+    Serial.println(value);
+  #endif
+}
+void printReturn(float value) {
   #ifdef RETURN_VALS
     Serial.println(value);
   #endif
