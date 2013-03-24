@@ -19,7 +19,7 @@ DallasTemperature sensors(&oneWire);
 
 // Setup the temperature conrol system. Should be done once at the
 // start of the prpgram.
-void initTempControl() {
+void initTempControl(void) {
   // Set the relay pin to an output:
   pinMode(RELAY_PIN, OUTPUT);
   // Make sure the relay is turned off

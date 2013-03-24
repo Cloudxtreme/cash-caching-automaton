@@ -76,3 +76,12 @@ void disableDebug() {
   printDebug("Debug mode is now disabled.");
   debugMode = false;
 }
+
+/*
+  Command: "temperature"
+  Action: Returns the current temperature of the vending machine in
+          degrees Celsius (°C).
+*/
+float getTemperature() {
+  return(runTempControl());
+}
