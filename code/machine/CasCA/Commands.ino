@@ -55,6 +55,24 @@ void turnOffLight() {
 }
 
 /*
+  Command: "relay on"
+  Action:  Turns the relay on indefinitely, controlling a light or
+           other device connected to the outlet.
+*/
+void turnOnRelay() {
+  digitalWrite(RELAY_MISC_PIN, HIGH);
+}
+
+/*
+  Command: "relay off"
+  Action:  Turns the relay off indefinitely, controlling a light or
+           other device connected to the outlet.
+*/
+void turnOffRelay() {
+  digitalWrite(RELAY_MISC_PIN, LOW);
+}
+
+/*
   Command: "debug on"
   Action: Enables the output of debug messages over the serial port.
 */

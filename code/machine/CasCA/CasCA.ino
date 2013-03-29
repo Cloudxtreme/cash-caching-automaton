@@ -4,6 +4,7 @@
 
 #define RELAY_DISP_PIN  A0
 #define RELAY_LIGHT_PIN A1
+#define RELAY_MISC_PIN  6
 
 #define MAX_COMMAND_LENGTH  64
 
@@ -135,6 +136,27 @@ void parseCommand() {
     else {
       invalidKeyword(keyword);
       printReturn(0); // Unsuccessful light command
+    }
+  }
+  else if (keyword.equals("relay")) {
+    keyword = getNextKeyword();
+    if (keyword.equals("on")) {
+      turnOnRelay();
+      printReturn(1); // Successful relay on
+    }    
+    else if (keyword.equals("off")) {
+      turnOffRelay();
+      printReturn(1); // Successful relay off
+    }
+    else if (keyword.equals("") || keyword.equals("relay")) {
+      printDebug("Not enough arguments; try one of these:/r/n");
+      printDebug("  relay on/r/n");
+      printDebug("  relay off/r/n");
+      printReturn(0); // Unsuccessful relay command
+    }
+    else {
+      invalidKeyword(keyword);
+      printReturn(0); // Unsuccessful relay command
     }
   }
   else if (keyword.equals("debug")) {
