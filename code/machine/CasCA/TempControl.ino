@@ -5,7 +5,7 @@
 #include <DallasTemperature.h>
 #include <EEPROM.h>
 
-#define ONE_WIRE_BUS   2 // Data wire from temp sensor
+#define ONE_WIRE_BUS 12 // Data wire from temp sensor
 #define RELAY_COMP_PIN 4 // Relay to control the compressor
 
 #define CENTER_TEMP_LOC 100 // Location in EEPROM to store center

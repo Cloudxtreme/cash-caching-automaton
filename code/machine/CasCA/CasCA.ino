@@ -241,7 +241,7 @@ void parseCommand() {
       printReturn(0); // Unsuccessful debug command
     }
   }
-  else if (keyword.equals("temperature")) {
+  else if (keyword.equals("temperature") || keyword.equals("temp")) {
     printReturn(getTemperature()); // Return the current temperature 
   }
   else if (keyword.equals("test")) {
