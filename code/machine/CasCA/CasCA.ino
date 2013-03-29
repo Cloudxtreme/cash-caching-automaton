@@ -159,6 +159,71 @@ void parseCommand() {
       printReturn(0); // Unsuccessful relay command
     }
   }
+  else if (keyword.equals("get")) {
+    keyword = getNextKeyword();
+    if (keyword.equals("temp-center")) {
+      printReturn(getTempCenter()); 
+    }    
+    else if (keyword.equals("temp-delta")) {
+      printReturn(getTempDelta());
+    }
+    else if (keyword.equals("") || keyword.equals("get")) {
+      printDebug("Not enough arguments; try one of these:/r/n");
+      printDebug("  get temp-center/r/n");
+      printDebug("  get temp-delta/r/n");
+      printReturn(0); // Unsuccessful get command
+    }
+    else {
+      invalidKeyword(keyword);
+      printReturn(0); // Unsuccessful get command
+    }
+  }
+  //------------
+  else if (keyword.equals("set")) {
+    keyword = getNextKeyword();
+    if (keyword.equals("temp-center")) {
+      keyword = getNextKeyword();
+      if (keywordIsFloat(keyword)) {
+        setTempCenter(keywordToFloat(keyword));
+        printReturn(1); // Successful set temp-center
+      }
+      else if (keyword.equals("") || keyword.equals("temp-center")) {
+        printDebug("Not enough arguments; try one of these:/r/n");
+        printDebug("  set temp-center 2.0/r/n");
+        printReturn(0); // Unsuccessful set temp-center
+      } 
+      else {
+        invalidKeyword(keyword);
+        printReturn(0); // Unsuccessful set temp-center
+      }
+    }    
+    else if (keyword.equals("temp-delta")) {
+      keyword = getNextKeyword();
+      if (keywordIsFloat(keyword)) {
+        setTempDelta(keywordToFloat(keyword));
+        printReturn(1); // Successful set temp-delta
+      }
+      else if (keyword.equals("") || keyword.equals("temp-delta")) {
+        printDebug("Not enough arguments; try one of these:/r/n");
+        printDebug("  set temp-delta 0.5/r/n");
+        printReturn(0); // Unsuccessful set temp-delta
+      } 
+      else {
+        invalidKeyword(keyword);
+        printReturn(0); // Unsuccessful set temp-delta
+      }
+    }    
+    else if (keyword.equals("") || keyword.equals("set")) {
+      printDebug("Not enough arguments; try one of these:/r/n");
+      printDebug("  set temp-delta 0.5/r/n");
+      printDebug("  set temp-center 2.0/r/n");
+      printReturn(0); // Unsuccessful set command
+    }
+    else {
+      invalidKeyword(keyword);
+      printReturn(0); // Unsuccessful set command
+    }
+  }
   else if (keyword.equals("debug")) {
     keyword = getNextKeyword();
     if (keyword.equals("on")) {
@@ -263,6 +328,53 @@ int keywordToInt(String keyword) {
   keyword.toCharArray(cstring, sizeof(cstring));
   // Convert the char array to an int:
   return atoi(cstring);
+}
+
+/*
+  keywordIsFloat() returns 'true' if the keyword is a float, and
+   'false' if it is not.
+*/
+boolean keywordIsFloat(String keyword) {
+  if (keyword.length() == 0)
+  {
+    return false;
+  }
+  // Convert the string to a char array:
+  char cstring[keyword.length() + 1];
+  keyword.toCharArray(cstring, sizeof(cstring));
+  
+  // A float can only have one decimal point:
+  bool hasDecimalPoint = false;
+  // Walk through the word, looking for digits and decimal points:
+  for(int i=0; i<keyword.length(); ++i)
+  {
+    if(cstring[i] == '.')
+    {
+      if(hasDecimalPoint) 
+        return false; // We already had a decimal point
+      else
+        hasDecimalPoint = true; // We now have a decimal point
+    }
+    else if(cstring[i] < '0' || cstring[i] > '9')
+    {
+      // If the character is anything other than 0-9, not a float:
+      return false;
+    }
+  }
+  return true;
+}
+
+/*
+  keywordToFloat() returns the converted float value of the
+   keyword. keyword should be checked with keywordIsFloat() first;
+   keywordToFloat() will return '0' if keyword conversion fails. 
+*/
+float keywordToFloat(String keyword) {
+  // Convert the string to a char array:
+  char cstring[keyword.length() + 1];
+  keyword.toCharArray(cstring, sizeof(cstring));
+  // Convert the char array to a float:
+  return atof(cstring);
 }
 
 /*
