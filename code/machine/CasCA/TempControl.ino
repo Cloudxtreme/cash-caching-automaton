@@ -5,9 +5,6 @@
 #include <DallasTemperature.h>
 #include <EEPROM.h>
 
-#define ONE_WIRE_BUS 12 // Data wire from temp sensor
-#define RELAY_COMP_PIN 4 // Relay to control the compressor
-
 #define CENTER_TEMP_LOC 100 // Location in EEPROM to store center
 #define DELTA_TEMP_LOC  104 // Location in EEPROM to store delta
 
@@ -56,7 +53,7 @@ float runTempControl(void) {
   printDebug("Temperature: ");
   printDebug(temperature);  
   printDebug("°C\r\n");
-  
+ 
   if(temperature > centerTemp + deltaTemp) {
     digitalWrite(RELAY_COMP_PIN, HIGH);
     printDebug("Compressor activated.\r\n");
@@ -84,7 +81,7 @@ float readFloat(unsigned int loc) {
   union FloatToBytes x;
   for(int i=0; i<sizeof(float); ++i)
   {
-    x.b[i] = EEPROM.read(loc);
+    x.b[i] = EEPROM.read(loc+i);
   }
   return x.f;
 }

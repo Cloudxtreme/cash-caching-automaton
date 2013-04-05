@@ -2,9 +2,12 @@
 #include <string.h>
 #include <TimerOne.h>
 
-#define RELAY_DISP_PIN  A0
-#define RELAY_LIGHT_PIN A1
-#define RELAY_MISC_PIN  6
+#define ONE_WIRE_BUS 8 // Data wire from temp sensor
+#define RELAY_COMP_PIN 9 // Relay to control the compressor
+#define RELAY_MISC_PIN  10 // Relay for something else
+#define RELAY_DISP_PIN  11 // Relay for change machine
+#define RELAY_LIGHT_PIN 12 // Raly for light in change machine
+
 
 #define MAX_COMMAND_LENGTH  64
 
