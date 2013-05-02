@@ -13,7 +13,7 @@ def dbconnect():
   dbfile = os.path.abspath(pathname)+'/'+DB
   return sqlite3.connect(dbfile)
 
-# Run the qery and return all if it is a selct, or lastrowid if it is insert
+# Run the query and return all if it is a select, or lastrowid if it is insert
 def query(sql,args):
     # create connection and set curser
     conn = dbconnect()
@@ -31,8 +31,8 @@ def query(sql,args):
     conn.close()
     return ret
 
-# return an array with id, username, email, usbsn, and balance
-def getuser(userid='', username='', usbsn='', email=''):
+# return an array with id, username, email, uid, and balance
+def getuser(userid='', username='', email=''):
   if userid:
     sql = '''SELECT a.*, SUM(b.usd) FROM users a LEFT JOIN transactions b ON b.users_id = a.id WHERE a.id = ?'''
     args = (userid,)
@@ -41,10 +41,6 @@ def getuser(userid='', username='', usbsn='', email=''):
     sql = '''SELECT a.*, SUM(b.usd) FROM users a LEFT JOIN transactions b ON b.users_id = a.id WHERE a.username = ?'''
     args = (username,)
     user =  query(sql, args)
-  elif usbsn:
-    sql = '''SELECT a.*, SUM(b.usd) FROM users a LEFT JOIN transactions b ON b.users_id = a.id WHERE a.usb_sn = ?'''
-    args = (usbsn,)
-    user = query(sql, args)
   elif email:
     sql = '''SELECT a.*, SUM(b.usd) FROM users a LEFT JOIN transactions b ON b.users_id = a.id WHERE a.email = ?'''
     args = (email,)

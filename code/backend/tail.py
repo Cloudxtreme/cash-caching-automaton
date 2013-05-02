@@ -2,6 +2,7 @@
 import time, os, re
 import serial
 from cash_api import *
+import ldap
 
 #Set the filename and open the file
 filename = '/var/log/kern.log'
@@ -49,9 +50,29 @@ def lightblink(blink=3):
   ser.write('light blink '+str(blink)+'\n')
   time.sleep(2)
 
+def getUsernameFromUSB(usbsn):
+  ld = ldap.initialize('ldap://10.56.0.8')
+  try:
+    ld.simple_bind_s()
+  except ldap.LDAPError, e:
+    if type(e.message) == dict and e.message.has_key('desc'):
+      print e.message['desc']
+    else:
+      print e
+    name = ""
+  else:
+    basedn = "dc=makerslocal,dc=org"
+    filter = "usbSerial={}".format(usbsn)
+    results = ld.search_s(basedn,ldap.SCOPE_SUBTREE,filter)
+    name = results[0][1]['uid'][0]
+  finally:
+    ld.unbind()  
+    return name
+
 def process(usbsn):
-  user = getuser(usbsn=usbsn)
-  # If user has enought money
+  username = getUsernameFromUSB(usbsn)
+  user = getuser(username=username)
+  # If user has enough money
   if user[4] >= 0.50:
     if dispense():
       addtrans(user=user, ammount='-0.50')
