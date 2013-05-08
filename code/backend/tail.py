@@ -62,7 +62,7 @@ def getUsernameFromUSB(usbsn):
     name = ""
   else:
     basedn = "dc=makerslocal,dc=org"
-    filter = "usbSerial={}".format(usbsn)
+    filter = "usbSerial="+usbsn
     results = ld.search_s(basedn,ldap.SCOPE_SUBTREE,filter)
     name = results[0][1]['uid'][0]
   finally:
