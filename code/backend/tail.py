@@ -12,6 +12,10 @@ st_results = os.stat(filename)
 st_size = st_results[6]
 file.seek(st_size)
 
+#tel = {'jack': 4098, 'sape': 4139}
+#tel['guido'] = 4127
+#tel
+
 # call to dispense change
 def dispense():
   user=getuser(userid=1)
@@ -49,32 +53,15 @@ def lightblink(blink=3):
   ser.write('light blink '+str(blink)+'\n')
   time.sleep(2)
 
-def getUsernameFromUSB(usbsn):
-  ld = ldap.initialize('ldap://10.56.0.8')
-  name = "NO_USER"
-  try:
-    ld.simple_bind_s()
-  except ldap.LDAPError, e:
-    if type(e.message) == dict and e.message.has_key('desc'):
-      print e.message['desc']
-    else:
-      print e
-  else:
-    basedn = "dc=makerslocal,dc=org"
-    filter = "usbSerial="+usbsn
-    results = ld.search_s(basedn,ldap.SCOPE_SUBTREE,filter)
-    name = results[0][1]['uid'][0]
-  finally:
-    ld.unbind()
-    return name
-
 def process(usbsn):
-  username = getUsernameFromUSB(usbsn)
-  user = getuser(username=username)
+  ldapuser = getuserfromldap(usbsn=usbsn)
+  user = getuser(username=ldapuser['username'])
   # If user has enough money
   if user[3] >= 0.50:
     if dispense():
       addtrans(user=user, ammount='-0.50')
+      message = "From: CasCA <CasCA@makerslocal.org>\nTo: %s\nSubject: CasCA Status $%.2f\n\nDear %s, \n\nThis is your neighborhood cash machine.  I am emailing to let you know that your current account balance is $%.2f.  If you would like to add more money please contact Tyler Crumpton aka. tylercrumpton in IRC or tyler.crumpton@gmail.com\n\nThanks\nCasCA" %(ldapuser['email'], round(user[3],2), user[1], round(user[3],2))
+      sendemail( sender='cashmachine@makerslocal.org', receiver=ldapuser['email'], message=message)
       return True
     else:
       lighton()
