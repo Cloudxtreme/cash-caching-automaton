@@ -60,6 +60,7 @@ def process(usbsn):
   if user[3] >= 0.50:
     if dispense():
       addtrans(user=user, ammount='-0.50')
+      user = getuser(username=ldapuser['username'])
       message = "From: CasCA <CasCA@makerslocal.org>\nTo: %s\nSubject: CasCA Status $%.2f\n\nDear %s, \n\nThis is your neighborhood cash machine.  I am emailing to let you know that your current account balance is $%.2f.  If you would like to add more money please contact Tyler Crumpton aka. tylercrumpton in IRC or tyler.crumpton@gmail.com\n\nThanks\nCasCA" %(ldapuser['email'], round(user[3],2), user[1], round(user[3],2))
       sendemail( sender='cashmachine@makerslocal.org', receiver=ldapuser['email'], message=message)
       return True
