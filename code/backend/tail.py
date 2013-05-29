@@ -12,10 +12,6 @@ st_results = os.stat(filename)
 st_size = st_results[6]
 file.seek(st_size)
 
-#tel = {'jack': 4098, 'sape': 4139}
-#tel['guido'] = 4127
-#tel
-
 # call to dispense change
 def dispense():
   user=getuser(userid=1)

@@ -13,7 +13,9 @@ DB = 'cash_db'
 def dbconnect():
   pathname = os.path.dirname(sys.argv[0])
   dbfile = os.path.abspath(pathname)+'/'+DB
-  return sqlite3.connect(dbfile)
+  con = sqlite3.connect(dbfile)
+  con.row_factory = sqlite3.Row
+  return con
 
 # Run the query and return all if it is a select, or lastrowid if it is insert
 def query(sql,args):
