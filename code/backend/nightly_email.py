@@ -15,5 +15,4 @@ message = message + "{0:>16s}{1:>16s}{2:>20s}\n".format("---------","--------","
 for trans in ret:
     message = message + "{0:>16s}{1:>16s}{2:>20s}\n".format(str(trans['username']),str(trans['usd']),time.strftime("%D %H:%M", time.localtime(int(trans['timestamp']))))
 
-#sendemail( sender='cashmachine@makerslocal.org', receiver=receiver, message=message)
-print message
+sendemail( sender='cashmachine@makerslocal.org', receiver=receiver, message=message)
