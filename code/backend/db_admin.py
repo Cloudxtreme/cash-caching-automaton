@@ -70,6 +70,23 @@ def newtrans():
   if not addtrans(user=user, ammount=ammount):
     print "Something went wrong!"
 
+def deletetrans():
+  days = raw_input("How many days back should we list transactions?: ")
+  days = "-" + str(days) + " day"
+  sql = '''select t.id, u.username, t.usd, t.timestamp from users as u join transactions t on u.id=t.users_id where ( t.users_id != 1 OR t.usd > 0 ) and t.timestamp > strftime('%s','now',?)'''
+  args = (days,)
+  ret = query(sql, args)
+  message = "{0:>16s}{0:>16s}{1:>16s}{2:>20s}\n".format("TransID", "User Name","Transaction","Time")
+  message = message + "{0:>16s}{0:>16s}{1:>16s}{2:>20s}\n".format("---------", "---------","--------","---------")
+  for trans in ret:
+    message = message + "{0:>16s}{0:>16s}{1:>16s}{2:>20s}\n".format(str(trans['id']),str(trans['username']),str(trans['usd']),time.strftime("%D %H:%M", time.localtime(int(trans['timestamp']))))
+  print message
+  transid = raw_input("What is the TransID of the transaction you wish to delete?: ")
+  sql = '''DELETE from transactions WHERE id = ?'''
+  args = (transid, )
+  ret = query(sql, args)
+
+
 def latesttrans(days=1):
   days = "-" + str(days) + " day"
   sql = '''select u.username, t.usd, t.timestamp from users as u join transactions t on u.id=t.users_id where ( t.users_id != 1 OR t.usd > 0 ) and t.timestamp > strftime('%s','now',?)'''
@@ -87,8 +104,9 @@ def menu():
   print "2. Update User"
   print "3. Add User"
   print "4. Add Transaction"
-  print "5. Transactions over the past day"
-  print "6. Transactions over the past x days"
+  print "5. Delete Transaction"
+  print "6. Transactions over the past day"
+  print "7. Transactions over the past x days"
   return raw_input("Selection: ")
 
  
@@ -104,8 +122,10 @@ while True:
     elif x == "4":
       newtrans()
     elif x == "5":
-      latesttrans()
+      deletetrans()
     elif x == "6":
+      latesttrans()
+    elif x == "7":
       days = raw_input("Number of days: ")
       latesttrans(days)
     else:
