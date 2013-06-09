@@ -76,10 +76,10 @@ def deletetrans():
   sql = '''select t.id, u.username, t.usd, t.timestamp from users as u join transactions t on u.id=t.users_id where ( t.users_id != 1 OR t.usd > 0 ) and t.timestamp > strftime('%s','now',?)'''
   args = (days,)
   ret = query(sql, args)
-  message = "{0:>16s}{0:>16s}{1:>16s}{2:>20s}\n".format("TransID", "User Name","Transaction","Time")
-  message = message + "{0:>16s}{0:>16s}{1:>16s}{2:>20s}\n".format("---------", "---------","--------","---------")
+  message = "{0:>16s}{1:>16s}{2:>16s}{3:>20s}\n".format("TransID", "User Name","Transaction","Time")
+  message = message + "{0:>16s}{1:>16s}{2:>16s}{3:>20s}\n".format("---------", "---------","--------","---------")
   for trans in ret:
-    message = message + "{0:>16s}{0:>16s}{1:>16s}{2:>20s}\n".format(str(trans['id']),str(trans['username']),str(trans['usd']),time.strftime("%D %H:%M", time.localtime(int(trans['timestamp']))))
+    message = message + "{0:>16s}{1:>16s}{2:>16s}{3:>20s}\n".format(str(trans['id']),str(trans['username']),str(trans['usd']),time.strftime("%D %H:%M", time.localtime(int(trans['timestamp']))))
   print message
   transid = raw_input("What is the TransID of the transaction you wish to delete?: ")
   sql = '''DELETE from transactions WHERE id = ?'''
