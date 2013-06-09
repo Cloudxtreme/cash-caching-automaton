@@ -82,9 +82,10 @@ def deletetrans():
     message = message + "{0:>16s}{1:>16s}{2:>16s}{3:>20s}\n".format(str(trans['id']),str(trans['username']),str(trans['usd']),time.strftime("%D %H:%M", time.localtime(int(trans['timestamp']))))
   print message
   transid = raw_input("What is the TransID of the transaction you wish to delete?: ")
-  sql = '''DELETE from transactions WHERE id = ?'''
-  args = (transid, )
-  ret = query(sql, args)
+  for trans in transid.split():
+    sql = '''DELETE from transactions WHERE id = ?'''
+    args = (trans, )
+    ret = query(sql, args)
 
 
 def latesttrans(days=1):
