@@ -25,6 +25,7 @@ def dispense():
   # create transaction of change machine user
   addtrans(user=user, ammount='-0.50')
   lightoff()
+  ser.close()
   return True
 
 def lighton():
@@ -33,6 +34,7 @@ def lighton():
   time.sleep(2)
   ser.write('light on\n')
   time.sleep(2)
+  ser.close()
   
 def lightoff():
   #print "light off"
@@ -40,6 +42,7 @@ def lightoff():
   time.sleep(2)
   ser.write('light off\n')
   time.sleep(2)
+  ser.close()
 
 # blink light, default is 3
 def lightblink(blink=3):
@@ -48,6 +51,7 @@ def lightblink(blink=3):
   time.sleep(2)
   ser.write('light blink '+str(blink)+'\n')
   time.sleep(2)
+  ser.close()
 
 def process(usbsn):
   ldapuser = getuserfromldap(usbsn=usbsn)

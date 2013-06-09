@@ -83,9 +83,13 @@ def deletetrans():
   print message
   transid = raw_input("What is the TransID of the transaction you wish to delete?: ")
   for trans in transid.split():
-    sql = '''DELETE from transactions WHERE id = ?'''
+    sql = '''SELECT users_id FROM transactions WHERE id = ?'''
     args = (trans, )
     ret = query(sql, args)
+    user = getuser(userid=1)
+    addtrans(user=user, ammount='0.50')
+    user = getuser(userid=ret[0][0])
+    addtrans(user=user, ammount='0.50')
 
 
 def latesttrans(days=1):
